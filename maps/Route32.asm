@@ -162,7 +162,6 @@ TrainerFisherRalph1:
 
 .Script:
 	loadvar VAR_CALLERID, PHONE_FISHER_RALPH
-	endifjustbattled
 	opentext
 	checkflag ENGINE_RALPH_READY_FOR_REMATCH
 	iftrue .Rematch
@@ -298,7 +297,6 @@ TrainerPicnickerLiz1:
 
 .Script:
 	loadvar VAR_CALLERID, PHONE_PICNICKER_LIZ
-	endifjustbattled
 	opentext
 	checkflag ENGINE_LIZ_READY_FOR_REMATCH
 	iftrue .Rematch

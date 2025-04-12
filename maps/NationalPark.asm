@@ -74,7 +74,6 @@ TrainerSchoolboyJack1:
 
 .Script:
 	loadvar VAR_CALLERID, PHONE_SCHOOLBOY_JACK
-	endifjustbattled
 	opentext
 	checkflag ENGINE_JACK_READY_FOR_REMATCH
 	iftrue .Rematch
