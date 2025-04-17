@@ -2319,6 +2319,10 @@ wItemsPocketCursor::    db
 wKeyItemsPocketCursor:: db
 wBallsPocketCursor::    db
 wTMHMPocketCursor::     db
+wFruitPocketCursor::    db
+wBattlePocketCursor::   db
+wMedicinePocketCursor:: db
+wLootPocketCursor:: db
 
 wPCItemsScrollPosition::        db
 	ds 1
@@ -2326,6 +2330,10 @@ wItemsPocketScrollPosition::    db
 wKeyItemsPocketScrollPosition:: db
 wBallsPocketScrollPosition::    db
 wTMHMPocketScrollPosition::     db
+wFruitPocketScrollPosition::    db
+wBattlePocketScrollPosition::   db
+wMedicinePocketScrollPosition:: db
+wLootPocketScrollPosition:: db
 
 wSwitchMon::
 wSwitchItem::
@@ -2829,7 +2837,11 @@ NEXTU
 ; catch tutorial dude pack
 wDudeNumItems:: db
 wDudeItems:: ds 2 * 4 + 1
+wDudeNumBattle::
 
+wDudeNumFruits::
+wDudeNumMedicine::
+wDudeNumLoot::
 wDudeNumKeyItems:: db
 wDudeKeyItems:: ds 18 + 1
 
@@ -2986,8 +2998,6 @@ endr
 
 wStoneTableAddress:: dw
 
-	ds 62
-
 wMapObjects::
 wPlayerObject:: map_object wPlayer ; player is map object 0
 ; wMap1Object - wMap15Object
@@ -3059,6 +3069,18 @@ wKeyItems:: ds MAX_KEY_ITEMS + 1
 wNumBalls:: db
 wBalls:: ds MAX_BALLS * 2 + 1
 
+wNumMedicines:: db
+wMedicines:: ds MAX_MEDICINE * 2 + 1
+
+wNumFruits:: db
+wFruits:: ds MAX_FRUITS * 2 + 1
+
+wNumBattles:: db
+wBattles:: ds MAX_BATTLES * 2 + 1
+
+wNumLoot:: db
+wLoot:: ds MAX_LOOT * 2 + 1
+
 wNumPCItems:: db
 wPCItems:: ds MAX_PC_ITEMS * 2 + 1
 
@@ -3085,7 +3107,7 @@ wMooMooBerries:: db
 wUndergroundSwitchPositions:: db
 wFarfetchdPosition:: db
 
-	ds 13
+	ds 5
 
 ; map scene ids
 wPokecenter2FSceneID::                            db
@@ -3168,19 +3190,15 @@ wMountMoonSquareSceneID::                         db
 wMobileTradeRoomSceneID::                         db
 wMobileBattleRoomSceneID::                        db
 
-	ds 187
+	ds 167
 
 wEventFlags:: flag_array NUM_EVENTS
 
 wCurBox:: db
 
-	ds 128
-
 wCelebiEvent::
 ; bit 2: forest is restless
 	db
-
-	ds 1
 
 wBikeFlags::
 ; bit 0: using strength
@@ -3204,8 +3222,6 @@ wCurMapSceneScriptCount:: db
 wCurMapSceneScriptsPointer:: dw
 wCurMapCallbackCount:: db
 wCurMapCallbacksPointer:: dw
-
-	ds 2
 
 ; Sprite id of each decoration
 wDecoBed::           db
@@ -3231,8 +3247,6 @@ wTimerEventStartDay:: db
 	ds 3
 
 wFruitTreeFlags:: flag_array NUM_FRUIT_TREES
-
-	ds 2
 
 wLuckyNumberDayTimer:: dw
 	ds 2
@@ -3272,8 +3286,6 @@ wSafariTimeRemaining:: dw
 
 wPhoneList:: ds CONTACT_LIST_SIZE + 1
 
-	ds 22
-
 wLuckyNumberShowFlag:: db
 wRepelType:: db
 wLuckyIDNumber:: dw
@@ -3297,8 +3309,6 @@ wDigMapNumber::  db
 wBackupWarpNumber:: db
 wBackupMapGroup::   db
 wBackupMapNumber::  db
-
-	ds 3
 
 wLastSpawnMapGroup:: db
 wLastSpawnMapNumber:: db
@@ -3339,8 +3349,6 @@ for n, 1, PARTY_LENGTH + 1
 wPartyMon{d:n}Nickname:: ds MON_NAME_LENGTH
 endr
 wPartyMonNicknamesEnd::
-
-	ds 22
 
 wPokedexCaught:: flag_array NUM_POKEMON
 wEndPokedexCaught::
