@@ -1262,6 +1262,14 @@ BattleCommand_Stab:
 	jr .SkipStab
 
 .stab
+
+	; Gym Badge Type boosts only apply to STAB moves
+	push de
+	push bc
+	farcall DoBadgeTypeBoosts
+	pop bc
+	pop de
+
 	ld hl, wCurDamage + 1
 	ld a, [hld]
 	ld h, [hl]
