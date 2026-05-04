@@ -115,7 +115,6 @@ ItemNameOrder:
 	db PROTEIN
 	db IRON
 	db CALCIUM
-	db ZINC 
 	db CARBOS
 
 
@@ -264,6 +263,7 @@ ItemNameOrder:
 	db ITEM_78
 	db ITEM_87
 	db ITEM_88
+	db ITEM_89
 	db ITEM_8D
 	db ITEM_8E
 	db ITEM_91
