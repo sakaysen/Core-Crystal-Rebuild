@@ -246,8 +246,8 @@ InitPokegearTilemap:
 	call ByteFill
 
 	ld de, PokeGear_TimeofDayIcons
- 	ld hl, vTiles2 tile $6d
- 	lb bc, BANK(PokeGear_TimeofDayIcons), 3
+ 	ld hl, vTiles2 tile $6c
+ 	lb bc, BANK(PokeGear_TimeofDayIcons), 4
  	call Request2bpp
 
 	ld a, [wPokegearCard]
@@ -638,6 +638,7 @@ Pokegear_UpdateClock:
  	jr z, .Day
 	cp 2
  	jr z, .Nite
+	ld [hl], $6f ; eve icon
  	ld de, .EveStr
 .got_tod		
  	hlcoord 12, 6
@@ -663,13 +664,16 @@ Pokegear_UpdateClock:
  	ld [hl], a
  	ret
 .Morn
+	ld [hl], $6c ; morn icon
  	ld de, .MornStr
  	jr .got_tod
 .Day
+	ld [hl], $6d ; day icon
  	ld de, .DayStr
  	jr .got_tod
  
 .Nite
+	ld [hl], $6e ; nite icon
  	ld de, .NiteStr
  	jr .got_tod
  
@@ -2878,6 +2882,8 @@ TownMapPals:
 	ld a, [hli]
 	push hl
 ; The palette map covers tiles $00 to $67; $68 and above use palette 0
+	cp $6c
+ 	jr z, .pal6
 	cp $6d
  	jr z, .pal6
  	cp $6e
