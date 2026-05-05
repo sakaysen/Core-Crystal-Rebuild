@@ -3,7 +3,7 @@
 	const GREEN_PAGE  ; 1
 	const BLUE_PAGE   ; 2
 	const ORANGE_PAGE ; 3
-NUM_STAT_PAGES EQU const_value
+DEF NUM_STAT_PAGES EQU const_value
 
 DEF STAT_PAGE_MASK EQU %00000011
 
@@ -729,7 +729,6 @@ LoadGreenPage:
 LoadBluePage:
 	call StatsScreen_PrintHappiness
 	call .PlaceOTInfo
-	call StatsScreen_PrintAffection
 	hlcoord 10, 8
 	ld de, SCREEN_WIDTH
 	ld b, 10
@@ -976,6 +975,7 @@ StatsScreen_placeCaughtTime:
 	rlca
 	rlca
 	dec a
+	maskbits NUM_DAYTIMES
 	ld hl, .times
 	call GetNthString
 	ld d, h
@@ -989,6 +989,7 @@ StatsScreen_placeCaughtTime:
 	db "MORN@"
 	db "DAY@"
 	db "NITE@"
+	db "EVE@"
 
 StatsScreen_placeCaughtLevel:
 	; caught level
@@ -1285,53 +1286,6 @@ PlaceString_UnownFont:
 	ld a, [hl]
 	pop hl
 	ret
-
-StatsScreen_PrintAffection:
-	ld de, AffectionString
-	hlcoord 0, 15
-	call PlaceString
-
-	ld a, [wTempMonHappiness]
-	ld de, MaxString
-	cp 255
-	jr z, .got_happiness
-	ld de, PoorString
-	cp 30
-	jr c, .got_happiness
-	ld de, LowString
-	cp 70
-	jr c, .got_happiness
-	ld de, MidString
-	cp 150
-	jr c, .got_happiness
-	ld de, GoodString
-	cp 220
- 	jr c, .got_happiness
-	ld de, HighString
-.got_happiness
-	hlcoord 1, 16
-	jp PlaceString
-
-AffectionString:
-	db "CONDITION/@"
-	
-MaxString:
-	db "OVERJOYED@"
-	
-HighString:
-	db "HAPPY@"
-	
-GoodString:
-	db "CONTENT@"
-	
-MidString:
-	db "AVERAGE@"
-	
-LowString:
-	db "UNHAPPY@"
-	
-PoorString:
-	db "MISERABLE@"
 
 StatsScreen_PlaceFrontpic:
 	ld hl, wTempMonDVs
