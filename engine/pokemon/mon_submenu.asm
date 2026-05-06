@@ -7,7 +7,7 @@ INCLUDE "data/mon_menu.asm"
 	const OW_SUBMENU_MOVE_STRENGTH ; 3
 	const OW_MOVE_FLASH ; 4
 	const OW_SUBMENU_MOVE_WHIRLPOOL ; 5
-	const OW_SUBMENTU_MOVE_WATERFALL ; 6
+	const OW_SUBMENU_MOVE_WATERFALL ; 6
 	const OW_MOVE_SWEET_SCENT ; 7
 	const OW_MOVE_DIG ; 8
 	const OW_MOVE_TELEPORT ; 9
@@ -201,13 +201,14 @@ CanUseWaterfall:
 
 CanUseFlash:
 ; Location Check
-	farcall SpecialAerodactylChamber
-	jr c, .valid_location ; can use flash
-	ld a, [wTimeOfDayPalset]
-	cp DARKNESS_PALSET
-	ret nz ; .fail ; not a darkcave
+	; DIFFERENT DESIGN GOAL - WE ALWAYS SHOW ALL AVAILABLE OPTIONS IN MONSUBMENU
+	;farcall SpecialAerodactylChamber
+	;jr c, .valid_location ; can use flash
+	;ld a, [wTimeOfDayPalset]
+	;cp DARKNESS_PALSET
+	;ret nz ; .fail ; not a darkcave
 
-.valid_location
+;.valid_location
 	ld a, OW_MOVE_FLASH
 	call TryOW_MonMenu
 	and a
@@ -217,31 +218,15 @@ CanUseFlash:
 	call AddMonMenuItem
 	ret
 
-Can_Use_Sweet_Scent:
-	farcall CanUseSweetScent
-	ret nc
-	farcall GetMapEncounterRate
-	ld a, b
-	and a
-	ret z
-
-	ld a, OW_MOVE_SWEET_SCENT
-	call TryOW_MonMenu
-	and a
-	ret nz ; if not zero, do not add
-
-	ld a, MONMENUITEM_SWEETSCENT
-	call AddMonMenuItem
-	ret
-
 CanUseDig:
-	call GetMapEnvironment
-	cp CAVE
-	jr z, .valid_location
-	cp DUNGEON
-	ret nz ; fail, not inside cave or dungeon
+	; DIFFERENT DESIGN GOAL - WE ALWAYS SHOW ALL AVAILABLE OPTIONS IN MONSUBMENU
+	;call GetMapEnvironment
+	;cp CAVE
+	;jr z, .valid_location
+	;cp DUNGEON
+	;ret nz ; fail, not inside cave or dungeon
 
-.valid_location
+;.valid_location
 	ld a, OW_MOVE_DIG
 	call TryOW_MonMenu
 	and a
@@ -252,9 +237,10 @@ CanUseDig:
 	ret
 
 CanUseFly:
-	call GetMapEnvironment
-	call CheckOutdoorMap
-	ret nz ; not outdoors, cant fly
+	; DIFFERENT DESIGN GOAL - WE ALWAYS SHOW ALL AVAILABLE OPTIONS IN MONSUBMENU
+	;call GetMapEnvironment
+	;call CheckOutdoorMap
+	;ret nz ; not outdoors, cant fly
 	
 	ld a, OW_MOVE_FLY
 	call TryOW_MonMenu
@@ -266,17 +252,18 @@ CanUseFly:
 	ret
 
 CanUseTeleport:
-	call GetMapEnvironment
-	call CheckOutdoorMap
-	jr z, .valid_location
+	; DIFFERENT DESIGN GOAL - WE ALWAYS SHOW ALL AVAILABLE OPTIONS IN MONSUBMENU
+	;call GetMapEnvironment
+	;call CheckOutdoorMap
+	;jr z, .valid_location
 	
-	call GetMapEnvironment
-	cp CAVE
-	jr z, .valid_location
-	cp DUNGEON
-	ret nz ; last valid location
+	;call GetMapEnvironment
+	;cp CAVE
+	;jr z, .valid_location
+	;cp DUNGEON
+	;ret nz ; last valid location
 
-.valid_location
+;.valid_location
 	ld a, OW_MOVE_TELEPORT
 	call TryOW_MonMenu
 	and a
@@ -667,101 +654,18 @@ MonSubMenu_GetNextEvoAttackByte:
 	inc hl
 	ret
 
-CanUseFlash:
-; Step 1: Badge Check
-	ld de, ENGINE_ZEPHYRBADGE
-	ld b, CHECK_FLAG
-	farcall EngineFlagAction
-	ld a, c
-	and a
-	ret z ; .fail, dont have needed badge
 
-; Step 2: Location Check
-	farcall SpecialAerodactylChamber
-	jr c, .valid_location ; can use flash
-	ld a, [wTimeOfDayPalset]
-	cp DARKNESS_PALSET
-	ret nz ; .fail ; not a darkcave
-
-.valid_location
-; Step 3: Check if Mon knows Move
-	ld a, FLASH
-	call CheckMonKnowsMove
-	and a
-	jr z, .yes
-
-; Step 4: Check for TM/HM in bag
-	ld a, HM_FLASH
-	ld [wCurItem], a
-	ld hl, wNumItems
-	call CheckItem
-	ret nc ; hm isnt in bag
-
-; Step 5: Check if Mon can learn move from TM/HM/Move Tutor
-	ld a, FLASH
-	call CheckMonCanLearn_TM_HM
-	jr c, .yes
-
-; Step 6: Check if Mon can learn move from LVL-UP
-	ld a, FLASH
-	call CheckLvlUpMoves
-	ret c ; fail
-
-.yes
-	ld a, MONMENUITEM_FLASH
-	call AddMonMenuItem
-	ret
-	
-	CanUseFly:
-; Step 1: Badge Check
-	ld de, ENGINE_STORMBADGE
-	ld b, CHECK_FLAG
-	farcall EngineFlagAction
-	ld a, c
-	and a
-	ret z ; .fail, dont have needed badge
-
-; Step 2: Location Check
-	call GetMapEnvironment
-	call CheckOutdoorMap
-	ret nz ; not outdoors, cant fly
-
-; Step 3: Check if Mon knows Move
-	ld a, FLY
-	call CheckMonKnowsMove
-	and a
-	jr z, .yes
-
-; Step 4: Check if HM is in bag
-	ld a, HM_FLY
-	ld [wCurItem], a
-	ld hl, wNumItems
-	call CheckItem
-	ret nc ; .fail, hm isnt in bag
-
-; Step 5: Check if mon can learn move via HM/TM/Move Tutor
-	ld a, FLY
-	call CheckMonCanLearn_TM_HM
-	jr c, .yes
-
-; Step 6: Check if Mon can learn move via LVL-UP
-	ld a, FLY
-	call CheckLvlUpMoves
-	ret c ; fail
-.yes
-	ld a, MONMENUITEM_FLY
-	call AddMonMenuItem
-	ret
-	
 Can_Use_Sweet_Scent:
 ; Step 1: Location check
-	ret nc
-	farcall GetMapEncounterRate
-	ld a, b
-	and a
-	ret z
+	; DIFFERENT DESIGN GOAL - WE ALWAYS SHOW ALL AVAILABLE OPTIONS IN MONSUBMENU
+	;farcall CanUseSweetScent
+	;ret nc
+	;farcall GetMapEncounterRate
+	;ld a, b
+	;and a
+	;ret z
 
-.valid_location
+;.valid_location
 ; Step 2: Check if mon knows Move 
 	ld a, SWEET_SCENT
 	call CheckMonKnowsMove
@@ -786,93 +690,5 @@ Can_Use_Sweet_Scent:
 	ret c ; fail
 .yes
 	ld a, MONMENUITEM_SWEETSCENT
-	call AddMonMenuItem
-	ret
-	
-	CanUseDig:
-; Step 1: Location Check
-	call GetMapEnvironment
-	cp CAVE
-	jr z, .valid_location
-	cp DUNGEON
-	ret nz ; fail, not inside cave or dungeon
-
-.valid_location
-; Step 2: Check if Mon knows Move
-	ld a, DIG
-	call CheckMonKnowsMove
-	and a
-	jr z, .yes
-
-; Step 3: Check if TM/HM is in bag
-	ld a, TM_DIG
-	ld [wCurItem], a
-	ld hl, wNumItems
-	call CheckItem
-	ret nc ; .fail ; TM not in bag
-
-; Step 4: Check if Mon can learn Dig via TM/HM/Move Tutor
-	ld a, DIG
-	call CheckMonCanLearn_TM_HM
-	jr c, .yes
-
-; Step 5: Check if Mon can learn move via LVL-UP
-	ld a, DIG
-	call CheckLvlUpMoves
-	ret c ; fail
-.yes
-	ld a, MONMENUITEM_DIG
-	call AddMonMenuItem
-	ret
-	
-	CanUseTeleport:
-; Step 1: Location Check
-	call GetMapEnvironment
-	call CheckOutdoorMap
-	ret nz ; .fail
-	
-; Step 2: Check if mon knows move
-	ld a, TELEPORT
-	call CheckMonKnowsMove
-	and a
-	jr z, .yes
-
-; Step 3: Check if TM/HM is in bag
-;	ld a, TM_TELEPORT
-;	ld [wCurItem], a
-;	ld hl, wNumItems
-;	call CheckItem
-;	ret nc ; .fail ; TM not in bag
-
-; Step 4: Check if Mon can learn Teleport via TM/HM/Move Tutor
-;	ld a, TELEPORT
-;	call CheckMonCanLearn_TM_HM
-;	jr c, .yes
-
-; Step 5: Check if mon learns move via LVL-UP
-	ld a, TELEPORT
-	call CheckLvlUpMoves
-	ret c ; fail
-.yes
-	ld a, MONMENUITEM_TELEPORT
-	call AddMonMenuItem	
-	ret
-	
-	CanUseSoftboiled:
-	ld a, SOFTBOILED
-	call CheckMonKnowsMove
-	and a
-	ret nz
-	ld a, MONMENUITEM_SOFTBOILED
-	call AddMonMenuItem
-	ret
-	
-	CanUseMilkdrink:
-	ld a, MILK_DRINK
-	call CheckMonKnowsMove
-	and a
-	ret nz
-
-	ld a, MONMENUITEM_MILKDRINK
 	call AddMonMenuItem
 	ret

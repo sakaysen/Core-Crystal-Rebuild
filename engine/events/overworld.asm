@@ -1429,15 +1429,18 @@ HeadbuttScript:
 	end
 
 TryHeadbuttOW::
-	ld a, OW_MOVE_HEADBUTT ; index for HEADBUTT
-	call TryOWMove
-	and a
-	jr z, .no
+	ld d, HEADBUTT
+	call CheckPartyMove
+	jr c, .no
 
 	ld a, BANK(AskHeadbuttScript)
 	ld hl, AskHeadbuttScript
 	call CallScript
 	scf
+	ret
+
+.no
+	xor a
 	ret
 
 AskHeadbuttScript:
@@ -1550,16 +1553,14 @@ AskRockSmashText:
 	text_end
 
 HasRockSmash:
-	ld a, OW_MOVE_ROCK_SMASH ; index for ROCK_SMASH
-	call TryOWMove
-	and a
-	jr nz, .yes
+	ld d, ROCK_SMASH
+	call CheckPartyMove
+	jr nc, .yes
 ; no
 	ld a, 1
 	jr .done
 .yes
 	xor a
-	jr .done
 .done
 	ld [wScriptVar], a
 	ret
